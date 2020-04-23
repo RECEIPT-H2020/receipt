@@ -4,49 +4,43 @@
 
     <div class="panel">
       <v-container style="pointer-events: all;">
-        <v-btn @click="isCreatingStory = !isCreatingStory" :color="isCreatingStory ? 'primary' : ''"
-          >Create story</v-btn
-        >
-        <v-btn @click="setStyle">Set style</v-btn>
-        <v-btn @click="fly">Fly</v-btn>
+        <v-btn class="ml-2" @click="setStyle" depressed color="#00000020">Set style</v-btn>
+        <v-btn class="ml-2" @click="fly" depressed color="#00000020">Fly</v-btn>
 
         <!-- story scroll-->
-        <scroll-stories />
+        <scroll-stories v-if="!isCreatingStory" />
 
         <v-sheet v-if="!isCreatingStory" class="mt-3">
           <v-container>
-            <div class="title">Stories (From DB)</div>
+            <div class="title mb-4">Stories (From DB)</div>
 
             <div v-for="story in stories" :key="story.id">
-              <v-row>
-                <v-col cols="3">
-                  <v-btn><v-icon left>mdi-play</v-icon> Play</v-btn>
-                </v-col>
-                <v-col>
-                  <div>{{ story.title }}</div>
+              <div class="d-flex">
+                <v-btn class="mr-3"><v-icon left>mdi-play</v-icon> Play</v-btn>
+                <div class="d-flex flex-column flex">
+                  <div class="font-weight-bold">{{ story.title }}</div>
                   <p>{{ story.description }}</p>
-                </v-col>
-              </v-row>
+                </div>
+
+                <v-btn icon class="ml-3"><v-icon>mdi-pencil</v-icon></v-btn>
+              </div>
             </div>
           </v-container>
         </v-sheet>
 
+        <v-btn
+          v-if="!isCreatingStory"
+          class="mt-3"
+          @click="isCreatingStory = !isCreatingStory"
+          :color="isCreatingStory ? 'primary' : ''"
+          >Create story</v-btn
+        >
         <!--Create a story-->
-        <v-sheet v-if="isCreatingStory" class="mt-3">
-          <v-container>
-            <div class="title">New Story</div>
-            <v-text-field label="Story name" required outlined></v-text-field>
-            Camera:
-            <v-row>
-              <v-col>
-                <pre class="caption">{{ camera }}</pre>
-              </v-col>
-              <v-col><v-btn>Import GeoJson</v-btn> <v-btn class="mt-2">Import CSV</v-btn></v-col>
-            </v-row>
-
-            <create-story />
-          </v-container>
-        </v-sheet>
+        <createStory
+          v-if="isCreatingStory"
+          :camera="camera"
+          @close="isCreatingStory = !isCreatingStory"
+        />
       </v-container>
     </div>
   </div>
@@ -127,7 +121,6 @@ export default {
       query stories {
         stories {
           id
-          story
           title
           description
         }
@@ -171,20 +164,8 @@ export default {
     backdrop-filter: none;
     background: #00000095;
   }
-  #features {
-    display: none;
-  }
 }
 
-#features {
-  font-family: sans-serif;
-  overflow-y: scroll;
-  background-color: #fafafa;
-  /*height: calc(100vh - 248px);*/
-  height: 300px;
-  margin-top: 40px;
-  width: 100%;
-}
 section {
   padding: 25px 50px;
   line-height: 25px;

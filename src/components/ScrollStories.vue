@@ -180,7 +180,6 @@ export default {
 }
 
 #features {
-  font-family: sans-serif;
   overflow-y: scroll;
   /*height: calc(100vh - 248px);*/
   height: 300px;
