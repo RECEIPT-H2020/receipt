@@ -1,4 +1,4 @@
-# Receipt - POC
+# Receipt - POC with Mapbox and VueJs - Discarded
 
 You need to have a .env file on a the root of the project.
 
