@@ -13,48 +13,32 @@
         ></v-text-field>
       </v-container>
     </v-sheet>
-    <v-container justify-content="end">
-      <v-btn disabled color="primary"><v-icon left>mdi-plus</v-icon> Add Page</v-btn>
-    </v-container>
-    <v-sheet>
-      <v-container>
-        <div class="title mb-2">Page 1</div>
 
-        <v-text-field
-          v-model="titlePage"
-          :rules="nameRules"
-          :counter="20"
-          label="Page Name"
-          required
-          outlined
-          dense
-        ></v-text-field>
-        <rich-editor />
-        <div class="caption mt-3"><v-icon size="13">mdi-video-vintage</v-icon> {{ camera }}</div>
-
-        <v-row no-gutters class="mt-3">
-          <v-btn>Import GeoJson</v-btn>
-          <v-btn class="ml-3">Import CSV</v-btn>
-        </v-row>
-      </v-container>
-    </v-sheet>
+    <div v-for="(page, index) in pages" :key="index">
+      <stoy-page :page="{ camera: page.camera }" :camera="camera" />
+    </div>
 
     <v-container class="mt-3">
-      <v-row no-gutters>
-        <v-btn class="mr-2" @click="$emit('close')">cancel</v-btn>
-        <v-btn disabled class="mr-2" color="primary">Save</v-btn>
-      </v-row>
+      <div class="d-flex">
+        <div class="flex">
+          <v-btn color="amber"><v-icon left>mdi-plus</v-icon> Add Page</v-btn>
+        </div>
+        <div>
+          <v-btn class="mr-2" @click="$emit('close')">cancel</v-btn>
+          <v-btn class="mr-2" color="primary">Save</v-btn>
+        </div>
+      </div>
     </v-container>
   </v-form>
 </template>
 
 <script>
-import RichEditor from './RichEditor'
 import gql from 'graphql-tag'
+import StoyPage from './StoyPage'
 
 export default {
   name: 'createStory',
-  components: { RichEditor },
+  components: { StoyPage },
   props: {
     camera: {
       type: Object,
@@ -64,18 +48,16 @@ export default {
   data: () => ({
     valid: false,
     title: '',
-    titlePage: '',
     description: 'A description',
+
+    pages: [
+      {
+        styleMapUrl: '',
+        titlePage: '',
+      },
+    ],
+
     titleRules: [(v) => !!v || 'Title is required'],
-    nameRules: [
-      (v) => !!v || 'Name is required',
-      (v) => v.length <= 20 || 'Name must be less than 10 characters',
-    ],
-    email: '',
-    emailRules: [
-      (v) => !!v || 'E-mail is required',
-      (v) => /.+@.+/.test(v) || 'E-mail must be valid',
-    ],
   }),
   apollo: {
     stories: gql`
@@ -112,5 +94,3 @@ export default {
   // },
 }
 </script>
-
-<style scoped></style>
